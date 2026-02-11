@@ -1,0 +1,9 @@
+
+{
+  "name": "EduMap",
+  "description": "A state-of-the-art Generative AI-powered system for educators to automate curriculum design, generating structured courses, topic plans, and industry-aligned learning outcomes.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
