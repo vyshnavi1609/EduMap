@@ -1,6 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { Curriculum, Resource } from '../types';
+import { getResourceLink } from '../services/resourceLinkService';
 
 interface CurriculumViewProps {
   curriculum: Curriculum;
@@ -47,11 +48,7 @@ const CurriculumView: React.FC<CurriculumViewProps> = ({
   const allResources = useMemo(() => curriculum.modules.flatMap(m => m.resources), [curriculum]);
 
   const getLink = (res: Resource) => {
-    if (res.url && res.url.trim() !== "" && res.url !== "#") return res.url;
-    const query = encodeURIComponent(`${res.title}${res.author ? ' ' + res.author : ''}`);
-    return res.type === 'Video' 
-      ? `https://www.youtube.com/results?search_query=${query}` 
-      : `https://www.google.com/search?q=${query}`;
+    return getResourceLink(res, curriculum.courseTitle);
   };
 
   const sections: { id: Section; label: string; icon: string }[] = [

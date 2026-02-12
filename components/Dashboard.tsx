@@ -41,14 +41,6 @@ const Dashboard: React.FC<DashboardProps> = ({ user, savedCurricula, onSelect, o
               <i className="fa-solid fa-wand-sparkles"></i>
               Create New Project
             </button>
-            <div className="hidden md:flex items-center gap-4 px-6 text-slate-400 font-medium">
-               <div className="flex -space-x-3">
-                  <div className="w-10 h-10 rounded-full border-4 border-white bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-400">J</div>
-                  <div className="w-10 h-10 rounded-full border-4 border-white bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-400">A</div>
-                  <div className="w-10 h-10 rounded-full border-4 border-white bg-fuchsia-100 flex items-center justify-center text-xs font-bold text-fuchsia-400">K</div>
-               </div>
-               <span className="text-sm">Trusted by 2k+ educators</span>
-            </div>
           </div>
         </div>
       </section>

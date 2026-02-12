@@ -26,7 +26,10 @@ export const generateCurriculum = async (formData: CurriculumFormData): Promise<
 
     CRITICAL REQUIREMENTS:
     1. TEXTBOOKS: For "Reading" resources, specify "title" AND "author". Ensure these are real or highly probable academic texts.
-    2. VIDEOS: Suggest popular YouTube videos or educational series titles for "Video" resources.
+    2. VIDEOS: Suggest video resources from popular platforms. Include working URLs when available, otherwise descriptive titles.
+       - Can suggest NPTEL videos (mention 'nptel' in the title for platform-matched links)
+       - Can suggest Infosys Springboard courses (mention 'springboard' in the title for platform-matched links)
+       - Suggest YouTube videos by exact title to make links easily searchable
     3. ASSESSMENTS: For each assessment type, include a "sampleConcepts" array containing 3-5 key concepts tested.
     4. MODULE ASSIGNMENTS: Include 2-3 "sampleQuestions" for the quizzes or tests within modules.
     5. DURATION: Each module MUST have a specific duration (e.g. "5 Hours").

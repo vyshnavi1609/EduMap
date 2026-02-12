@@ -174,33 +174,129 @@ const App: React.FC = () => {
 
           {view === 'saved' && (
             <div className="space-y-10 animate-in fade-in duration-500">
-              <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div><h1 className="text-4xl font-black text-slate-900">Knowledge Vault</h1><p className="text-slate-600 font-bold">Manage and refine your saved academic frameworks.</p></div>
-                <div className="flex flex-wrap gap-4">
-                  <div className="relative flex-1 min-w-[240px]">
-                    <i className="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" placeholder="Search blueprints..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-12 pr-6 py-4 rounded-2xl border border-slate-200 w-full focus:ring-4 focus:ring-indigo-500/10 outline-none font-bold text-slate-900 bg-white" />
+              {/* Header Section */}
+              <header className="bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900 rounded-3xl p-10 md:p-14 text-white">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                  <div className="space-y-3">
+                    <h1 className="text-5xl font-black tracking-tight">Academic Archive</h1>
+                    <p className="text-slate-300 font-bold text-lg">Browse, refine, and manage your complete curriculum library</p>
+                    <div className="flex gap-4 pt-2">
+                      <span className="flex items-center gap-2 text-sm font-bold text-indigo-200"><i className="fa-solid fa-book text-indigo-400"></i>{savedCurricula.length} Saved</span>
+                      <span className="flex items-center gap-2 text-sm font-bold text-purple-200"><i className="fa-solid fa-chart-line text-purple-400"></i>{savedCurricula.length > 0 ? (savedCurricula.reduce((a, b) => a + b.modules.length, 0)) : 0} Total Modules</span>
+                    </div>
                   </div>
-                  <select value={filterSubject} onChange={(e) => setFilterSubject(e.target.value)} className="px-6 py-4 rounded-2xl border border-slate-200 bg-white font-bold text-slate-900 outline-none">{subjects.map(s => <option key={s} value={s}>{s}</option>)}</select>
-                  <select value={filterLevel} onChange={(e) => setFilterLevel(e.target.value)} className="px-6 py-4 rounded-2xl border border-slate-200 bg-white font-bold text-slate-900 outline-none">{levels.map(l => <option key={l} value={l}>{l}</option>)}</select>
                 </div>
               </header>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {filteredCurricula.map((c) => (
-                  <div key={c.id} onClick={() => { setCurrentCurriculum(c); setView('view'); }} className="group bg-white rounded-[2.5rem] border border-slate-200 p-10 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all cursor-pointer flex flex-col h-full relative overflow-hidden">
-                    {c.rating && <div className="absolute top-8 right-8 flex items-center gap-1 text-indigo-600 font-black text-xs"><i className="fa-solid fa-star"></i> {c.rating}</div>}
-                    <div className="flex justify-between mb-4"><span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase border border-indigo-100">{c.targetAudience}</span></div>
-                    <h3 className="text-2xl font-black text-slate-900 mb-4 group-hover:text-indigo-600 transition-colors leading-tight">{c.courseTitle}</h3>
-                    <p className="text-slate-600 text-sm line-clamp-3 mb-8 font-bold flex-1 italic">"{c.description}"</p>
-                    <div className="pt-6 border-t border-slate-100 flex items-center justify-between text-[11px] font-black text-slate-500">
-                      <span><i className="fa-solid fa-layer-group mr-1.5 text-indigo-600"></i>{c.modules.length} Modules</span>
-                      {c.industryAlignment.relevanceScore && <span className="text-indigo-600">{c.industryAlignment.relevanceScore}% Fit</span>}
-                    </div>
+              {/* Search & Filters */}
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-wrap gap-4">
+                  <div className="flex-1 min-w-[240px] relative">
+                    <i className="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input 
+                      type="text" 
+                      placeholder="Search by course title, subject, or keywords..." 
+                      value={searchQuery} 
+                      onChange={(e) => setSearchQuery(e.target.value)} 
+                      className="pl-12 pr-6 py-3.5 rounded-xl border border-slate-200 w-full focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-slate-900 bg-white shadow-sm hover:shadow-md transition-all"
+                    />
                   </div>
-                ))}
-                {filteredCurricula.length === 0 && <div className="col-span-full py-20 text-center text-slate-400 font-bold">No results found matching your criteria.</div>}
+                  <select 
+                    value={filterSubject} 
+                    onChange={(e) => setFilterSubject(e.target.value)} 
+                    className="px-6 py-3.5 rounded-xl border border-slate-200 bg-white font-bold text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm hover:shadow-md transition-all"
+                  >
+                    {subjects.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                  <select 
+                    value={filterLevel} 
+                    onChange={(e) => setFilterLevel(e.target.value)} 
+                    className="px-6 py-3.5 rounded-xl border border-slate-200 bg-white font-bold text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm hover:shadow-md transition-all"
+                  >
+                    {levels.map(l => <option key={l} value={l}>{l}</option>)}
+                  </select>
+                </div>
               </div>
+
+              {/* Curricula Grid or Empty State */}
+              {filteredCurricula.length === 0 ? (
+                <div className="py-24 text-center">
+                  <div className="w-32 h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-8">
+                    <i className="fa-solid fa-inbox text-5xl text-indigo-400"></i>
+                  </div>
+                  <h3 className="text-2xl font-black text-slate-900 mb-2">No curricula found</h3>
+                  <p className="text-slate-500 font-medium mb-8 max-w-sm mx-auto">Try adjusting your filters or create a new curriculum to get started.</p>
+                  <button onClick={() => setView('create')} className="px-8 py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+                    <i className="fa-solid fa-plus mr-2"></i>Create New Course
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredCurricula.map((c) => (
+                    <div 
+                      key={c.id} 
+                      onClick={() => { setCurrentCurriculum(c); setView('view'); }} 
+                      className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all cursor-pointer flex flex-col h-full relative"
+                    >
+                      {/* Top Accent Bar */}
+                      <div className="h-3 w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+
+                      {/* Card Content */}
+                      <div className="p-6 flex-1 flex flex-col">
+                        {/* Header with Badge and Rating */}
+                        <div className="flex justify-between items-start gap-3 mb-4">
+                          <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg uppercase border border-indigo-100 tracking-wider">
+                            {c.targetAudience}
+                          </span>
+                          {c.rating && (
+                            <div className="flex items-center gap-1 text-amber-500 font-black text-xs bg-amber-50 px-2 py-1 rounded-lg">
+                              <i className="fa-solid fa-star"></i> {c.rating}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="text-xl font-black text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors line-clamp-2">
+                          {c.courseTitle}
+                        </h3>
+
+                        {/* Description */}
+                        <p className="text-slate-500 text-sm line-clamp-2 mb-4 font-medium italic leading-relaxed flex-1">
+                          {c.description}
+                        </p>
+
+                        {/* Stats Grid */}
+                        <div className="grid grid-cols-2 gap-3 mb-4 pb-4 border-t border-slate-100 pt-4">
+                          <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 p-3 rounded-lg">
+                            <p className="text-[10px] text-indigo-600 font-black uppercase tracking-wider mb-1">Modules</p>
+                            <p className="text-lg font-black text-indigo-700">{c.modules.length}</p>
+                          </div>
+                          <div className="bg-gradient-to-br from-indigo-50/80 to-purple-100 p-3 rounded-lg">
+                            <p className="text-[10px] text-purple-600 font-black uppercase tracking-wider mb-1">Duration</p>
+                            <p className="text-lg font-black text-purple-700">{c.totalDuration}</p>
+                          </div>
+                          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-3 rounded-lg">
+                            <p className="text-[10px] text-purple-600 font-black uppercase tracking-wider mb-1">Difficulty</p>
+                            <p className="text-sm font-black text-purple-700">{c.difficulty}</p>
+                          </div>
+                          <div className="bg-gradient-to-br from-indigo-100 to-purple-50 p-3 rounded-lg">
+                            <p className="text-[10px] text-indigo-600 font-black uppercase tracking-wider mb-1">Relevance</p>
+                            <p className="text-lg font-black text-indigo-700">{c.industryAlignment.relevanceScore}%</p>
+                          </div>
+                        </div>
+
+                        {/* Bottom Info */}
+                        <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
+                          <span>{new Date(c.createdAt).toLocaleDateString()}</span>
+                          <span className="text-indigo-600 flex items-center gap-1 group-hover:gap-2 transition-all">
+                            View <i className="fa-solid fa-arrow-right"></i>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>
